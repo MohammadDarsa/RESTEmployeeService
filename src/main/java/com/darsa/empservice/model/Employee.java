@@ -6,14 +6,21 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.springframework.context.annotation.Configuration;
 
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
+@Entity
 @JsonFilter("EmployeeFilter")
 public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int employeeId;
+    @Column(name = "employee_name")
     @Size(min = 1, max = 10)
     private String name;
+    @Column(name = "employee_email")
     @Email
     private String email;
 

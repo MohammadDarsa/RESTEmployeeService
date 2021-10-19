@@ -42,11 +42,20 @@ public class EmployeeController {
         return new ResponseEntity<>(mappingJacksonValue, HttpStatus.FOUND);
     }
 
-    @PostMapping(value = "/employees/create")
+    @PostMapping(value = "/employees/save")
     public ResponseEntity<Object> saveEmployee(@Valid @RequestBody Employee employee) {
         Employee emp = service.saveEmployee(employee);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{employeeId}").buildAndExpand(emp.getEmployeeId()).toUri();
         return ResponseEntity.created(uri).build();
+    }
+
+    @PostMapping(value = "/employees/create")
+    public ResponseEntity<Object> createEmployee(@Valid @RequestBody Employee employee) {
+        Employee emp = service.createEmployee(employee);
+        FilterProvider filters = new SimpleFilterProvider().addFilter("EmployeeFilter", SimpleBeanPropertyFilter.filterOutAllExcept("name", "employeeId"));
+        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(emp);
+        mappingJacksonValue.setFilters(filters);
+        return new ResponseEntity<>(mappingJacksonValue, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/employees/delete/{id}")
