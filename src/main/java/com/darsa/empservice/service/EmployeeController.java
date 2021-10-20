@@ -7,17 +7,12 @@ import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -42,16 +37,10 @@ public class EmployeeController {
         return new ResponseEntity<>(mappingJacksonValue, HttpStatus.FOUND);
     }
 
-    @PostMapping(value = "/employees/save")
-    public ResponseEntity<Object> saveEmployee(@Valid @RequestBody Employee employee) {
-        Employee emp = service.saveEmployee(employee);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{employeeId}").buildAndExpand(emp.getEmployeeId()).toUri();
-        return ResponseEntity.created(uri).build();
-    }
 
-    @PostMapping(value = "/employees/create")
-    public ResponseEntity<Object> createEmployee(@Valid @RequestBody Employee employee) {
-        Employee emp = service.createEmployee(employee);
+    @PostMapping(value = "/employees/persist")
+    public ResponseEntity<Object> persistEmployee(@Valid @RequestBody Employee employee) {
+        Employee emp = service.persistEmployee(employee);
         FilterProvider filters = new SimpleFilterProvider().addFilter("EmployeeFilter", SimpleBeanPropertyFilter.filterOutAllExcept("name", "employeeId"));
         MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(emp);
         mappingJacksonValue.setFilters(filters);
@@ -60,9 +49,6 @@ public class EmployeeController {
 
     @DeleteMapping("/employees/delete/{id}")
     public void deleteEmployee(@PathVariable int id) {
-        Employee emp = service.deleteEmployee(id);
-        if(emp == null) {
-            throw new EmployeeNotFound("Employee couldn't be deleted");
-        }
+        service.deleteEmployee(id);
     }
 }

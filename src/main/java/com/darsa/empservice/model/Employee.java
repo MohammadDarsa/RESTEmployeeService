@@ -1,11 +1,6 @@
 package com.darsa.empservice.model;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import org.springframework.context.annotation.Configuration;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
@@ -46,6 +41,9 @@ public class Employee {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Employee() {
     }
 
     public Employee(int employeeId, String name, String email) {
